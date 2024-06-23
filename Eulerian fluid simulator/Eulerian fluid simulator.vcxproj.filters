@@ -25,8 +25,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="C:\Users\joaop\Downloads\Roboto\Roboto-Black.ttf">
-      <Filter>Arquivos de Origem</Filter>
+    <Font Include="C:\Users\joaop\Downloads\Roboto-Black.ttf">
+      <Filter>Arquivos de Recurso</Filter>
     </Font>
   </ItemGroup>
 </Project>

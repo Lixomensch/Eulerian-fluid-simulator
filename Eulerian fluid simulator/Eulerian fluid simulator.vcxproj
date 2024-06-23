@@ -139,7 +139,7 @@
     <ClInclude Include="main_window.h" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="C:\Users\joaop\Downloads\Roboto\Roboto-Black.ttf" />
+    <Font Include="C:\Users\joaop\Downloads\Roboto-Black.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
