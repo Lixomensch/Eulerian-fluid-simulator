@@ -21,12 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main_window.h">
-      <Filter>Arquivos de Origem</Filter>
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="C:\Users\joaop\Downloads\Roboto-Black.ttf">
-      <Filter>Arquivos de Recurso</Filter>
-    </Font>
   </ItemGroup>
 </Project>
