@@ -21,8 +21,8 @@ class fluid
 		density = 1000.0;
 		grid_dimension.x = x+2;
 		grid_dimension.y = y+2;
-		int tam_cell = h;
-		num_cells = grid_dimension.x* grid_dimension.y;
+		tam_cell = h;
+		num_cells = grid_dimension.x * grid_dimension.y;
 		u.resize(num_cells);
 		v.resize(num_cells);
 		new_u.resize(num_cells);
@@ -59,7 +59,7 @@ class fluid
 					float s_down = solid[(i + 1) * n + j];
 					float s_left = solid[i * n + j - 1];
 					float s_right = solid[i * n + j + 1];
-					float s = s_up + s_down + s_left + s_right;
+					s = s_up + s_down + s_left + s_right;
 
 					if (s == 0.0)
 						continue;
