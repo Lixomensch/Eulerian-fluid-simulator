@@ -23,29 +23,61 @@ struct button
     }
 };
 
-struct menu
-{
-    sf::RectangleShape rect;
+struct menu {
+    sf::RectangleShape rect_up;
+    sf::RectangleShape rect_left;
+    sf::RectangleShape rect_right;
+    sf::RectangleShape rect_down;
     std::vector<button> buttons;
 
+    // Constants for rectangle and button sizes
+    const float BORDER_SIZE = 50.f;
+    const float BUTTON_WIDTH = 100.f;
+    const float BUTTON_HEIGHT = 40.f;
+    const float BUTTON_MARGIN = 10.f;
+    const sf::Color BUTTON_COLORS[3] = { sf::Color::Blue, sf::Color::Green, sf::Color::Red };
+
     menu(sf::RenderWindow& window) {
-        rect.setSize(sf::Vector2f(window.getSize().x, 50.f));
-        rect.setFillColor(sf::Color::White);
-        rect.setPosition(0.f, 0.f);
+        initialize_rectangles(window);
+        initialize_buttons(window);
+    }
 
+    void initialize_rectangles(sf::RenderWindow& window) {
+        sf::Vector2u windowSize = window.getSize();
 
-        sf::Vector2f buttonSize(100.f, rect.getSize().y - 10.f);
-        sf::Vector2f buttonPosition(10.f, 5.f);
+        rect_up.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
+        rect_up.setFillColor(sf::Color::White);
+        rect_up.setPosition(0.f, 0.f);
 
-        buttons.emplace_back(button(buttonSize, buttonPosition, sf::Color::Blue));
-        buttonPosition.x += 110.f;
-        buttons.emplace_back(button(buttonSize, buttonPosition, sf::Color::Green));
-        buttonPosition.x += 110.f;
-        buttons.emplace_back(button(buttonSize, buttonPosition, sf::Color::Red));
+        rect_left.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
+        rect_left.setFillColor(sf::Color::White);
+        rect_left.setPosition(0.f, 0.f);
+
+        rect_right.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
+        rect_right.setFillColor(sf::Color::White);
+        rect_right.setPosition(windowSize.x - BORDER_SIZE, 0.f);
+
+        rect_down.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
+        rect_down.setFillColor(sf::Color::White);
+        rect_down.setPosition(0.f, windowSize.y - BORDER_SIZE);
+    }
+
+    void initialize_buttons(sf::RenderWindow& window) {
+        sf::Vector2f buttonSize(BUTTON_WIDTH, BORDER_SIZE - BUTTON_MARGIN);
+        sf::Vector2f buttonPosition(BUTTON_MARGIN, BUTTON_MARGIN / 2);
+
+        for (const auto& color : BUTTON_COLORS) {
+            buttons.emplace_back(button(buttonSize, buttonPosition, color));
+            buttonPosition.x += BUTTON_WIDTH + BUTTON_MARGIN;
+        }
     }
 
     void draw(sf::RenderWindow& window) {
-        window.draw(rect);
+        window.draw(rect_up);
+        window.draw(rect_left);
+        window.draw(rect_right);
+        window.draw(rect_down);
+
         for (auto& btn : buttons) {
             window.draw(btn.shape);
             window.draw(btn.buttonText);
@@ -93,8 +125,9 @@ class main_window
 
 public:
     main_window()
-        : window(sf::VideoMode(1366, 768), "Euler fluid simulator"), mainMenu(window)
+        : window(sf::VideoMode(1366, 738), "Euler fluid simulator"), mainMenu(window)
     {
+        // 30 pixels were subtracted from the y-axis to compensate for the standard Windows title bar
         pos_mouse = { 0,0 };
         cod_mouse = { 0,0 };
     }
