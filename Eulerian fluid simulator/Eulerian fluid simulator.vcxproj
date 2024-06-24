@@ -136,7 +136,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fluid.h" />
     <ClInclude Include="main_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="C:\Users\joaop\Desktop\arial.ttf" />
+    <Font Include="C:\Users\joaop\Desktop\rb.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

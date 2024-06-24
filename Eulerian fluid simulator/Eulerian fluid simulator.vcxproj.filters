@@ -23,5 +23,16 @@
     <ClInclude Include="main_window.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="fluid.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="C:\Users\joaop\Desktop\arial.ttf">
+      <Filter>Arquivos de Recurso</Filter>
+    </Font>
+    <Font Include="C:\Users\joaop\Desktop\rb.ttf">
+      <Filter>Arquivos de Recurso</Filter>
+    </Font>
   </ItemGroup>
 </Project>
