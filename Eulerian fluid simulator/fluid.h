@@ -2,6 +2,7 @@
 
 class fluid
 {
+public:
 	float density;
 	sf::Vector2i grid_dimension;
 	int tam_cell;
@@ -92,6 +93,128 @@ class fluid
 			v[0 * n + j] = v[1 * n + j];
 			v[(grid_dimension.x - 1) * n + j] = v[(grid_dimension.x - 2) * n + j];
 		}
+	}
+
+	float sampleField(int x, int y, int field) {
+		int n = grid_dimension.y;
+		int h = tam_cell;
+		float h1 = 1.0 / h;
+		float h2 = 0.5 * h;
+
+		x = std::max(std::min(x, grid_dimension.x * h), h);
+		y = std::max(std::min(y, grid_dimension.y * h), h);
+
+		int dx = 0.0;
+		int dy = 0.0;
+
+		std::vector<float> f;
+
+		switch (field) {
+		case 0: f = u; dy = h2; break;
+		case 1: f = v; dx = h2; break;
+		case 2: f = m; dx = h2; dy = h2; break;
+		}
+
+		int left = std::min(static_cast<int>(std::floor((x - dx) * h1)), grid_dimension.x - 1);
+		float tx = ((x - dx) - left * h) * h1;
+		int right = std::min(left + 1, grid_dimension.x - 1);
+
+		int down = std::min(static_cast<int>(std::floor((y - dy) * h1)), grid_dimension.y - 1);
+		float ty = ((y - dy) - down * h) * h1;
+		int up = std::min(down + 1,grid_dimension.y - 1);
+
+		float sx = 1.0 - tx;
+		float sy = 1.0 - ty;
+
+		float val = sx * sy * f[left * n + down] +
+			tx * sy * f[right * n + down] +
+			tx * ty * f[right * n + up] +
+			sx * ty * f[left * n + up];
+
+		return val;
+	}
+
+	float avg_u(int i, int j) {
+		float n = grid_dimension.y;
+
+		float u_l = (u[i * n + j - 1] + u[i * n + j] + u[(i + 1) * n + j - 1] + u[(i + 1) * n + j]) * 0.25;
+
+		return u_l;
+
+	}
+
+	float avg_v(int i, int j) {
+		float n = grid_dimension.y;
+
+		float v_l = (v[i * n + j - 1] + v[i * n + j] + v[(i + 1) * n + j - 1] + v[(i + 1) * n + j]) * 0.25;
+
+		return v_l;
+
+	}
+
+	void advectVel(float dt) {
+
+		new_u = u;
+		new_v = v;
+
+		int n = grid_dimension.y;
+		int h = tam_cell;
+		float h2 = 0.5 * h;
+
+		for (int i = 1; i < grid_dimension.x; i++) {
+			for (int j = 1; j < grid_dimension.y; j++) {
+
+				// u component
+				if (solid[i * n + j] != 0.0 && solid[(i - 1) * n + j] != 0.0 && j <grid_dimension.y - 1) {
+					int x = i * h;
+					int y = j * h + h2;
+					float u_l = u[i * n + j];
+					float v_l = avg_v(i, j);
+					x = x - dt * u_l;
+					y = y - dt * v_l;
+					u_l = sampleField(x, y, 0);
+					new_u[i * n + j] = u_l;
+				}
+				// v component
+				if (solid[i * n + j] != 0.0 && solid[i * n + j - 1] != 0.0 && i < grid_dimension.x - 1) {
+					int x = i * h + h2;
+					int y = j * h;
+					float u_l = avg_u(i, j);
+					float v_l = v[i * n + j];
+					x = x - dt * u_l;
+					y = y - dt * v_l;
+					v_l = sampleField(x, y, 1);
+					new_v[i * n + j] = v_l;
+				}
+			}
+		}
+
+		u = new_u;
+		v = new_v;
+	}
+
+	void move_smoke(float dt) {
+
+		new_m = m;
+
+		int n = grid_dimension.y;
+		int h = tam_cell;
+		float h2 = 0.5 * h;
+
+		for (int i = 1; i < grid_dimension.x - 1; i++) {
+			for (int j = 1; j < grid_dimension.y - 1; j++) {
+
+				if (solid[i * n + j] != 0.0) {
+					float u_l = (u[i * n + j] + u[(i + 1) * n + j]) * 0.5;
+					float v_l = (v[i * n + j] + v[i * n + j + 1]) * 0.5;
+					float x = i * h + h2 - dt * u_l;
+					float y = j * h + h2 - dt * v_l;
+
+					new_m[i * n + j] = sampleField(x, y, 2);
+				}
+			}
+		}
+		m = new_m;
 	}
 };
 

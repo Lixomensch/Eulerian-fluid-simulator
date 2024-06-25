@@ -85,18 +85,38 @@ struct menu {
     }
 };
 
+class draw_fluid {
+public:
+    sf::CircleShape mouse;
+    draw_fluid(){
+        mouse.setRadius(50.f);
+        mouse.setFillColor(sf::Color::White);
+    }
+
+    bool isMouseOver(sf::RenderWindow& window, menu& main_menu) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+        return mousePos.x > main_menu.rect_left.getPosition().x + main_menu.rect_left.getSize().x &&
+            mousePos.x < main_menu.rect_right.getPosition().x &&
+            mousePos.y > main_menu.rect_up.getPosition().y + main_menu.rect_up.getSize().y &&
+            mousePos.y < main_menu.rect_down.getPosition().y;
+    }
+    void draw_mouse(sf::RenderWindow& window) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        mouse.setPosition(static_cast<sf::Vector2f>(mousePos)- sf::Vector2f(mouse.getRadius(), mouse.getRadius()));
+
+        window.draw(mouse);
+    }
+
+
+};
+
 class main_window
 {
     sf::RenderWindow window;
     menu mainMenu;
-
-    sf::Vector2i pos_mouse;
-    sf::Vector2f cod_mouse;
-
-    std::vector<std::string> options;
-    std::vector<sf::Vector2f> coords;
-    std::vector<sf::Text> texts;
-    std::vector<std::size_t> sizes;
+    draw_fluid fluid_window;
+    bool draw_mouse;
 
     void events() {
         sf::Event event;
@@ -114,22 +134,32 @@ class main_window
                     std::cout << "Botao clicado!" << std::endl;
                 }
             }
+
+            if (fluid_window.isMouseOver(window, mainMenu)) 
+            {
+               sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+               draw_mouse = true;
+               std::cout << mousePos.x << "," << mousePos.y << std::endl;
+            }
+
         }
+
+
+
     }
 
     void draw() {
         window.clear();
         mainMenu.draw(window);
+        if (draw_mouse) fluid_window.draw_mouse(window);
         window.display();
+        draw_mouse = false;
     }
 
 public:
     main_window()
         : window(sf::VideoMode(1366, 738), "Euler fluid simulator"), mainMenu(window)
     {
-        // 30 pixels were subtracted from the y-axis to compensate for the standard Windows title bar
-        pos_mouse = { 0,0 };
-        cod_mouse = { 0,0 };
     }
 
     void run_window() {
