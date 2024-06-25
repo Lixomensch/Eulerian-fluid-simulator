@@ -88,9 +88,12 @@ struct menu {
 class draw_fluid {
 public:
     sf::CircleShape mouse;
-    draw_fluid(){
+    fluid fluid;
+
+    draw_fluid(int x, int y, int h): fluid(x,y,h) {
         mouse.setRadius(50.f);
         mouse.setFillColor(sf::Color::White);
+
     }
 
     bool isMouseOver(sf::RenderWindow& window, menu& main_menu) {
@@ -106,6 +109,34 @@ public:
         mouse.setPosition(static_cast<sf::Vector2f>(mousePos)- sf::Vector2f(mouse.getRadius(), mouse.getRadius()));
 
         window.draw(mouse);
+    }
+
+    void set_mouse() {
+
+        int x = mouse.getPosition().x;
+        int y = mouse.getPosition().y;
+        float r = mouse.getRadius();
+        int n = fluid.grid_dimension.y;
+
+        for (int i = 1; i < fluid.grid_dimension.x - 2; i++) {
+            for (int j = 1; j < fluid.grid_dimension.y - 2; j++) {
+
+                fluid.solid[i * n + j] = 1.0;
+
+                float dx = (i + 0.5) * fluid.tam_cell - x;
+                float dy = (j + 0.5) * fluid.tam_cell - y;
+
+                if (dx * dx + dy * dy < r * r) {
+                    fluid.solid[i * n + j] = 0.0;
+
+                        fluid.m[i * n + j] = 1.0;
+                        fluid.u[i * n + j] = 0;
+                        fluid.u[(i + 1) * n + j] = 0;
+                        fluid.v[i * n + j] = 0;
+                        fluid.v[i * n + j + 1] = 0;
+                }
+            }
+        }
     }
 
 
@@ -158,7 +189,8 @@ class main_window
 
 public:
     main_window()
-        : window(sf::VideoMode(1366, 738), "Euler fluid simulator"), mainMenu(window)
+        : window(sf::VideoMode(1366, 738), "Euler fluid simulator"), mainMenu(window), 
+        fluid_window(1366 - 2 * mainMenu.BORDER_SIZE,738 - 2 * mainMenu.BORDER_SIZE,10)
     {
     }
 
