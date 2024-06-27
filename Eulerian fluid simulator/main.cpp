@@ -7,6 +7,5 @@ int main()
 {
     main_window window;
     window.run_window();
-    window.~main_window();
     return 0;
 }
