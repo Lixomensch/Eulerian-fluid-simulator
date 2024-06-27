@@ -22,7 +22,7 @@ struct button
             mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.y;
     }
 };
-
+const float BORDER_SIZE = 50.f;
 struct menu {
     sf::RectangleShape rect_up;
     sf::RectangleShape rect_left;
@@ -31,7 +31,7 @@ struct menu {
     std::vector<button> buttons;
 
     // Constants for rectangle and button sizes
-    const float BORDER_SIZE = 50.f;
+
     const float BUTTON_WIDTH = 100.f;
     const float BUTTON_HEIGHT = 40.f;
     const float BUTTON_MARGIN = 10.f;
@@ -118,12 +118,12 @@ public:
 
     void set_mouse() {
         float r = mouse.getRadius();
-        int x = mouse.getPosition().x + r;
-        int y = mouse.getPosition().y + r;
+        int x = mouse.getPosition().x;
+        int y = mouse.getPosition().y;
         int n = fluid.grid_dimension.y;
 
-        float vx = x - mouse_pos.x;
-        float vy = y - mouse_pos.y;
+        float vx = (x - mouse_pos.x)*10;
+        float vy = (y - mouse_pos.y)*10;
 
         mouse_pos.x = x;
         mouse_pos.y = y;
@@ -152,7 +152,7 @@ public:
         fluid.integrate(dt, gravity);
         std::fill(fluid.pressure.begin(), fluid.pressure.end(), 0.0f);
         fluid.incompressibility(numIters, dt);
-        fluid.boundary_velocities();
+        //fluid.boundary_velocities();
         fluid.advectVel(dt);
         fluid.move_smoke(dt);
     }
@@ -170,7 +170,7 @@ public:
         for (int i = 0; i < fluid.grid_dimension.x; i++) {
             for (int j = 0; j < fluid.grid_dimension.y; j++) {
                 float density = fluid.m[i * n + j];
-                cell.setPosition(i * fluid.tam_cell, j * fluid.tam_cell);
+                cell.setPosition(i * fluid.tam_cell + BORDER_SIZE, j * fluid.tam_cell + BORDER_SIZE);
                 sf::Uint8 colorValue = static_cast<sf::Uint8>(density * 255);
                 cell.setFillColor(sf::Color(colorValue, colorValue, colorValue));
                 window.draw(cell);
@@ -223,7 +223,7 @@ public:
     main_window()
         : window(sf::VideoMode(1366, 738), "Euler fluid simulator"),
         mainMenu(window),
-        fluid_window(120, 60, 10),
+        fluid_window(250, 126, 5),
         draw_mouse(false)
     {}
 
