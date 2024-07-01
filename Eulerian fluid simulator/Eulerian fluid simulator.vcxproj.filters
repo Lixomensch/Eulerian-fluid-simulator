@@ -28,10 +28,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\SFML-2.6.1\bin\openal32.dll" />
-    <None Include="C:\SFML-2.6.1\bin\sfml-audio-2.dll" />
-    <None Include="C:\SFML-2.6.1\bin\sfml-graphics-2.dll" />
-    <None Include="C:\SFML-2.6.1\bin\sfml-system-2.dll" />
-    <None Include="C:\SFML-2.6.1\bin\sfml-window-2.dll" />
+    <CopyFileToFolders Include="C:\SFML-2.6.1\bin\openal32.dll">
+      <Filter>Arquivos de Recurso</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="C:\SFML-2.6.1\bin\sfml-graphics-2.dll">
+      <Filter>Arquivos de Recurso</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="C:\SFML-2.6.1\bin\sfml-system-2.dll">
+      <Filter>Arquivos de Recurso</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="C:\SFML-2.6.1\bin\sfml-window-2.dll">
+      <Filter>Arquivos de Recurso</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
