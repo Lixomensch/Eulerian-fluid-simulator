@@ -28,11 +28,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="C:\Users\joaop\Desktop\arial.ttf">
-      <Filter>Arquivos de Recurso</Filter>
-    </Font>
-    <Font Include="C:\Users\joaop\Desktop\rb.ttf">
-      <Filter>Arquivos de Recurso</Filter>
-    </Font>
+    <None Include="C:\SFML-2.6.1\bin\openal32.dll" />
+    <None Include="C:\SFML-2.6.1\bin\sfml-audio-2.dll" />
+    <None Include="C:\SFML-2.6.1\bin\sfml-graphics-2.dll" />
+    <None Include="C:\SFML-2.6.1\bin\sfml-system-2.dll" />
+    <None Include="C:\SFML-2.6.1\bin\sfml-window-2.dll" />
   </ItemGroup>
 </Project>
