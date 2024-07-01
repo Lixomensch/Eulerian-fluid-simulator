@@ -5,7 +5,7 @@
 
 int main()
 {
-    main_window window;
-    window.run_window();
+    MainWindow window;
+    window.run();
     return 0;
 }

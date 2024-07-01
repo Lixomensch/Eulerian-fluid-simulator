@@ -1,16 +1,22 @@
 #pragma once
 #include "fluid.h"
 
-struct button
+// Constants for button colors and border size
+const float BORDER_SIZE = 50.f;
+const float BUTTON_WIDTH = 100.f;
+const float BUTTON_HEIGHT = 40.f;
+const float BUTTON_MARGIN = 10.f;
+const sf::Color BUTTON_COLORS[1] = { sf::Color::Blue };
+
+struct Button
 {
     sf::RectangleShape shape;
     sf::Text buttonText;
 
-    button(sf::Vector2f size, sf::Vector2f position, sf::Color color) {
+    Button(sf::Vector2f size, sf::Vector2f position, sf::Color color) {
         shape.setSize(size);
         shape.setPosition(position);
         shape.setFillColor(color);
-
     }
 
     bool isMouseOver(const sf::RenderWindow& window) const {
@@ -22,61 +28,54 @@ struct button
             mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + buttonSize.y;
     }
 };
-const float BORDER_SIZE = 50.f;
-struct menu {
-    sf::RectangleShape rect_up;
-    sf::RectangleShape rect_left;
-    sf::RectangleShape rect_right;
-    sf::RectangleShape rect_down;
-    std::vector<button> buttons;
 
-    // Constants for rectangle and button sizes
+struct Menu {
+    sf::RectangleShape rectUp;
+    sf::RectangleShape rectLeft;
+    sf::RectangleShape rectRight;
+    sf::RectangleShape rectDown;
+    std::vector<Button> buttons;
 
-    const float BUTTON_WIDTH = 100.f;
-    const float BUTTON_HEIGHT = 40.f;
-    const float BUTTON_MARGIN = 10.f;
-    const sf::Color BUTTON_COLORS[3] = { sf::Color::Blue, sf::Color::Green, sf::Color::Red };
-
-    menu(sf::RenderWindow& window) {
-        initialize_rectangles(window);
-        initialize_buttons(window);
+    Menu(sf::RenderWindow& window) {
+        initializeRectangles(window);
+        initializeButtons(window);
     }
 
-    void initialize_rectangles(sf::RenderWindow& window) {
+    void initializeRectangles(sf::RenderWindow& window) {
         sf::Vector2u windowSize = window.getSize();
 
-        rect_up.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
-        rect_up.setFillColor(sf::Color::White);
-        rect_up.setPosition(0.f, 0.f);
+        rectUp.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
+        rectUp.setFillColor(sf::Color::White);
+        rectUp.setPosition(0.f, 0.f);
 
-        rect_left.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
-        rect_left.setFillColor(sf::Color::White);
-        rect_left.setPosition(0.f, 0.f);
+        rectLeft.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
+        rectLeft.setFillColor(sf::Color::White);
+        rectLeft.setPosition(0.f, 0.f);
 
-        rect_right.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
-        rect_right.setFillColor(sf::Color::White);
-        rect_right.setPosition(windowSize.x - BORDER_SIZE, 0.f);
+        rectRight.setSize(sf::Vector2f(BORDER_SIZE, windowSize.y));
+        rectRight.setFillColor(sf::Color::White);
+        rectRight.setPosition(windowSize.x - BORDER_SIZE, 0.f);
 
-        rect_down.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
-        rect_down.setFillColor(sf::Color::White);
-        rect_down.setPosition(0.f, windowSize.y - BORDER_SIZE);
+        rectDown.setSize(sf::Vector2f(windowSize.x, BORDER_SIZE));
+        rectDown.setFillColor(sf::Color::White);
+        rectDown.setPosition(0.f, windowSize.y - BORDER_SIZE);
     }
 
-    void initialize_buttons(sf::RenderWindow& window) {
+    void initializeButtons(sf::RenderWindow& window) {
         sf::Vector2f buttonSize(BUTTON_WIDTH, BORDER_SIZE - BUTTON_MARGIN);
         sf::Vector2f buttonPosition(BORDER_SIZE, BORDER_SIZE / 2 - BUTTON_HEIGHT / 2);
 
         for (const auto& color : BUTTON_COLORS) {
-            buttons.emplace_back(button(buttonSize, buttonPosition, color));
+            buttons.emplace_back(Button(buttonSize, buttonPosition, color));
             buttonPosition.x += BUTTON_WIDTH + BUTTON_MARGIN;
         }
     }
 
     void draw(sf::RenderWindow& window) {
-        window.draw(rect_up);
-        window.draw(rect_left);
-        window.draw(rect_right);
-        window.draw(rect_down);
+        window.draw(rectUp);
+        window.draw(rectLeft);
+        window.draw(rectRight);
+        window.draw(rectDown);
 
         for (auto& btn : buttons) {
             window.draw(btn.shape);
@@ -85,60 +84,60 @@ struct menu {
     }
 };
 
-class draw_fluid {
+class DrawFluid {
 public:
     sf::CircleShape mouse;
-    fluid fluid;
+    Fluid fluid;
     float gravity;
     float dt;
     sf::Clock clock;
-    sf::Vector2i mouse_pos;
+    sf::Vector2i mousePos;
 
-    draw_fluid(int x, int y, int h) : fluid(x, y, h) {
+    DrawFluid(int x, int y, int h) : fluid(x, y, h) {
         mouse.setRadius(50.f);
         mouse.setFillColor(sf::Color::White);
         gravity = 0;
         dt = 0;
     }
 
-    bool isMouseOver(const sf::RenderWindow& window, const menu& main_menu) const {
+    bool isMouseOver(const sf::RenderWindow& window, const Menu& mainMenu) const {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
-        return mousePos.x > main_menu.rect_left.getPosition().x + main_menu.rect_left.getSize().x &&
-            mousePos.x < main_menu.rect_right.getPosition().x &&
-            mousePos.y > main_menu.rect_up.getPosition().y + main_menu.rect_up.getSize().y &&
-            mousePos.y < main_menu.rect_down.getPosition().y;
+        return mousePos.x > mainMenu.rectLeft.getPosition().x + mainMenu.rectLeft.getSize().x &&
+            mousePos.x < mainMenu.rectRight.getPosition().x &&
+            mousePos.y > mainMenu.rectUp.getPosition().y + mainMenu.rectUp.getSize().y &&
+            mousePos.y < mainMenu.rectDown.getPosition().y;
     }
 
-    void draw_mouse(sf::RenderWindow& window) {
+    void drawMouse(sf::RenderWindow& window) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         mouse.setPosition(static_cast<sf::Vector2f>(mousePos) - sf::Vector2f(mouse.getRadius(), mouse.getRadius()));
         window.draw(mouse);
     }
 
-    void set_mouse() {
+    void setMouse() {
         float r = mouse.getRadius();
         int x = mouse.getPosition().x;
         int y = mouse.getPosition().y;
         int n = fluid.grid_dimension.y;
 
-        float vx = (x - mouse_pos.x)*10;
-        float vy = (y - mouse_pos.y)*10;
+        float vx = (x - mousePos.x) * 10;
+        float vy = (y - mousePos.y) * 10;
 
-        mouse_pos.x = x;
-        mouse_pos.y = y;
+        mousePos.x = x;
+        mousePos.y = y;
 
         for (int i = 1; i < fluid.grid_dimension.x - 2; i++) {
-            float posX = (i + 0.5f) * fluid.tam_cell;
+            float posX = (i + 0.5f) * fluid.cell_size;
             for (int j = 1; j < fluid.grid_dimension.y - 2; j++) {
-                fluid.solid[i * n + j] = 1.0f;
+                fluid.solid[i * n + j] = 10.0f;
 
-                float posY = (j + 0.5f) * fluid.tam_cell;
+                float posY = (j + 0.5f) * fluid.cell_size;
                 float dx = posX - x;
                 float dy = posY - y;
 
                 if (dx * dx + dy * dy < r * r) {
-                    fluid.m[i * n + j] = 0.5f + 0.5f * std::sin(0.1f * dt);
+                    fluid.m[i * n + j] = 0.5f + 0.2f * std::sin(0.3f * dt);
                     fluid.u[i * n + j] = vx;
                     fluid.u[(i + 1) * n + j] = vx;
                     fluid.v[i * n + j] = vy;
@@ -152,25 +151,32 @@ public:
         fluid.integrate(dt, gravity);
         std::fill(fluid.pressure.begin(), fluid.pressure.end(), 0.0f);
         fluid.incompressibility(numIters, dt);
-        //fluid.boundary_velocities();
-        fluid.advectVel(dt);
+        fluid.advect_velocity(dt);
         fluid.move_smoke(dt);
     }
 
-    void draw_window(sf::RenderWindow& window, bool mouse_press) {
+    void reset() {
+        std::fill(fluid.pressure.begin(), fluid.pressure.end(), 0.0f);
+        std::fill(fluid.u.begin(), fluid.u.end(), 0.0f);
+        std::fill(fluid.v.begin(), fluid.v.end(), 0.0f);
+        std::fill(fluid.solid.begin(), fluid.solid.end(), 0.0f);
+        std::fill(fluid.m.begin(), fluid.m.end(), 0.0f);
+    }
+
+    void drawWindow(sf::RenderWindow& window, bool mousePress) {
         int n = fluid.grid_dimension.y;
         simulate(dt, 10);
 
-        if (mouse_press) {
-            draw_mouse(window);
-            set_mouse();
+        if (mousePress) {
+            drawMouse(window);
+            setMouse();
         }
 
-        sf::RectangleShape cell(sf::Vector2f(fluid.tam_cell, fluid.tam_cell));
+        sf::RectangleShape cell(sf::Vector2f(fluid.cell_size, fluid.cell_size));
         for (int i = 0; i < fluid.grid_dimension.x; i++) {
             for (int j = 0; j < fluid.grid_dimension.y; j++) {
                 float density = fluid.m[i * n + j];
-                cell.setPosition(i * fluid.tam_cell + BORDER_SIZE, j * fluid.tam_cell + BORDER_SIZE);
+                cell.setPosition(i * fluid.cell_size + BORDER_SIZE, j * fluid.cell_size + BORDER_SIZE);
                 sf::Uint8 colorValue = static_cast<sf::Uint8>(density * 255);
                 cell.setFillColor(sf::Color(colorValue, colorValue, colorValue));
                 window.draw(cell);
@@ -181,14 +187,13 @@ public:
     }
 };
 
-
-class main_window {
+class MainWindow {
     sf::RenderWindow window;
-    menu mainMenu;
-    draw_fluid fluid_window;
-    bool draw_mouse;
+    Menu mainMenu;
+    DrawFluid fluidWindow;
+    bool drawMouse;
 
-    void events() {
+    void handleEvents() {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -199,39 +204,40 @@ class main_window {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             for (auto& btn : mainMenu.buttons) {
                 if (btn.isMouseOver(window)) {
-                    std::cout << "Botão clicado!" << std::endl;
+                    fluidWindow.reset();
                 }
             }
 
-            if (fluid_window.isMouseOver(window, mainMenu)) {
+            if (fluidWindow.isMouseOver(window, mainMenu)) {
+                drawMouse = true;
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                draw_mouse = true;
                 std::cout << mousePos.x << "," << mousePos.y << std::endl;
             }
         }
     }
 
-    void draw() {
+    void render() {
         window.clear();
         mainMenu.draw(window);
-        fluid_window.draw_window(window, draw_mouse);
+        fluidWindow.drawWindow(window, drawMouse);
         window.display();
-        draw_mouse = false;
+        drawMouse = false;
     }
 
 public:
-    main_window()
-        : window(sf::VideoMode(1366, 738), "Euler fluid simulator"),
+    MainWindow()
+        : window(sf::VideoMode(1366, 738), "Euler Fluid Simulator"),
         mainMenu(window),
-        fluid_window(250, 126, 5),
-        draw_mouse(false)
+        fluidWindow(251, 125, 5),
+        drawMouse(false)
     {}
 
-    void run_window() {
+    void run() {
         while (window.isOpen()) {
-            events();
-            draw();
+            handleEvents();
+            render();
         }
     }
 };
+
 
